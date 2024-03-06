@@ -1,4 +1,5 @@
-{
+[{
+  "id": "123",
   "name": "Math Challenge",
   "questions":[
     {
@@ -15,5 +16,24 @@
     }
   ],
   "highest_score": 10
-}
+},
+{
+  "id": "231",
+  "name": "Science Challenge",
+  "questions":[
+    {
+      "question": "What is 2 + 2?",
+      "options": ["3", "4", "5", "6"],
+      "correct_answer": "4",
+      "points": 10
+    },
+    {
+      "question": "Solve: 5 * 8",
+      "options": ["35", "40", "45", "50"],
+      "correct_answer": "40",
+      "points": 10
+    }
+  ],
+  "highest_score": 20
+}]
 

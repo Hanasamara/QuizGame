@@ -1,14 +1,12 @@
-const Home = () => {
+import React from 'react';
+
+function Home() {
   return (
-    <div>
-          <h3>This is a Basic Setup for Certification Project III</h3>
-          <p>As you can see, we have a basic router setup, with links to separate pages</p>
-          <p>As you can see, we can open separate components in these routes </p>
-          <p>You will need to incorporate router logically into your project option,
-            and how you do it may differ according to which project you use
-          </p>
+    <div className='home'>
+      <h1>Home Page</h1>
+      <p>This is the QuizGame website.</p>
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;

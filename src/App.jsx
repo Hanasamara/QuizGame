@@ -8,29 +8,25 @@ import {
 /**
  * Importing other components
  */
+import './App.css';
+import Header from './components/Header'
 import Home from './components/Home'
-import About from './components/About'
+import Game from './components/Game'
+import Contact from './components/Contact'
 
 const App = () => {
   return (
     <Router>
-      <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/home">Home</Link>
-            </li>
-            <li>
-              <Link to="/about">About</Link>
-            </li>
-          </ul>
-        </nav>
+      <div className='App'>
+        <Header />
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL.
             Furthermore, notice how the content above always renders? On each page? */}
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/quizgame" element={<Game />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </div>
     </Router>
