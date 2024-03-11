@@ -11,7 +11,7 @@ function QuizList({quizzes, onDeleteQuiz, onPlayQuiz, onEditQuiz}) {
       
       <ul className='quizListUL'>
         {quizzes.map((quiz) => (
-          <li className='quizListLI'>
+          <li key={quiz.id} className='quizListLI'>
             <span className='quizname'>{quiz.name}</span>
             < BsFillFilePlayFill className='icon' onClick={(e) => onPlayQuiz(e,quiz.id)} />
             < FaEdit className='icon' onClick={(e) => onEditQuiz(e,quiz.id)} />

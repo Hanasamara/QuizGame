@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-function PlayQuiz({ quiz, onReturnToList }) {
+function PlayQuiz({ quiz, onReturnToList ,onUpdateHighestScore}) {
   const [showResults, setShowResults] = useState(false);
   const [currentScore, setCurrentScore] = useState(0);
-  const [selectedAnswers, setSelectedAnswers] = useState(Array((quiz.questions.length-1)).fill(null));
+  const [selectedAnswers, setSelectedAnswers] = useState([]);
 
   console.log(quiz);
   const handleAnswerSelect = (index,answer) => {
@@ -15,7 +15,7 @@ function PlayQuiz({ quiz, onReturnToList }) {
 
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (quizId) => {
     //check if there is any question is not answered
     if (selectedAnswers.includes(null)) {
       alert('Please answer all questions before submitting.');
@@ -30,10 +30,12 @@ function PlayQuiz({ quiz, onReturnToList }) {
           total += quiz.questions[index].points;
         }
       });
+
       setCurrentScore(total);
 
-      if (currentScore > quiz.highest_score){
-        quiz.highest_score = currentScore;
+      if (total > quiz.highest_score){
+        onUpdateHighestScore(quizId,total);
+
       }
     }
   };
@@ -41,7 +43,7 @@ function PlayQuiz({ quiz, onReturnToList }) {
   const handlePlayAgain = () => {
     setShowResults(false);
     setCurrentScore(0);
-    setSelectedAnswers(Array((quiz.questions.length-1)).fill(null));
+    setSelectedAnswers([]);
     
   };
 
@@ -74,20 +76,20 @@ function PlayQuiz({ quiz, onReturnToList }) {
             
         
           ))}
-          <button className='submit' onClick={handleSubmit} disabled={showResults}>Submit</button>
+          <button className='submit' onClick={() => handleSubmit(quiz.id)} disabled={showResults}>Submit</button>
           <button className='return' onClick={onReturnToList}>Return to Quiz Game</button>
         </div>
         <div className='resultdiv'>
           {showResults ? (
-            <div>
+            <div className='results'>
               <h3>Results:</h3>
               <p>Highest Score: {quiz.highest_score}</p>
               <p>Current Score: {currentScore}</p>
-              <button onClick={handlePlayAgain}>Play Again</button>
+              <button className='playAgainButton' onClick={handlePlayAgain}>Play Again</button>
             </div>
           ):
           (
-            <div>
+            <div className='results'>
               <h3>Results:</h3>
               <p>Highest Score: {quiz.highest_score}</p>
               <p>Current Score: {currentScore}</p>

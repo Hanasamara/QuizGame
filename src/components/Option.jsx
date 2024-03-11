@@ -1,19 +1,24 @@
 import React from 'react';
 import { IoCloseSharp } from "react-icons/io5";
 
-function Option({ value, onChange, onRemove }) {
+function Option({ option, index, onChange, onRemove }) {
   const handleChange = (e) => {
-    onChange(e.target.value);
+    onChange(e.target.value,index);
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        value={value}
-        onChange={handleChange}
-      />
-      <IoCloseSharp className='iconx' type="button" onClick={onRemove} />
+    <div className='optionitem'>
+        <label>
+            Option-{index+1}: 
+            <input
+                type="text"
+                value={option}
+                onChange={handleChange}
+            />
+        </label>
+        { index >0 &&
+            (<IoCloseSharp className='iconx' type="button" onClick={onRemove} />)
+        }
     </div>
   );
 }
