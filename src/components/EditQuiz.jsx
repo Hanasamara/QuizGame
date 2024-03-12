@@ -13,7 +13,10 @@ function EditQuiz({quiz , onReturnToList, onDeleteQuestion, onAddQuestion, onUpd
   const handleDelete = (questionId) => {
     const updatedQuestions = questions.filter(question =>  question.id !== questionId);
     setQuestions(updatedQuestions);
-    onDeleteQuestion(quiz.id, questionId);
+
+    // Update the quiz in the state with the updated questions
+    const updatedQuiz = { ...quiz, questions: updatedQuestions };
+    onDeleteQuestion(updatedQuiz);
   };
 
   const handleEdit = (questionId) => {

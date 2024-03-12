@@ -48,23 +48,23 @@ function PlayQuiz({ quiz, onReturnToList ,onUpdateHighestScore}) {
   };
 
   return (
-    <div className='quizPlaydiv'>
+    <div className='quizPlaydiv' >
       <h2>{quiz.name}</h2>
       <div className='questionsresults'>
         <div className='questionsdiv'>
           {/* I will use question index to handle answer for each question */}
-          {quiz.questions.map((question, index) => (
-            <div className='question'>
-              <p>{index+1}. {question.question}</p>
-              <ul className="options">
-                {question.options.map(option => (
-                  <li className='option'>
+          {quiz.questions.map((question,indexQ) => (
+            <div className='question' key={question.id}>
+              <p>{indexQ+1}. {question.question}</p>
+              <ul className="options" key={question.id}>
+                {question.options.map((option,index) => (
+                  <li className='option' key={index}>
                     <label>
                       <input
                         type="radio"
                         value={option}
-                        onChange={() => handleAnswerSelect(index,option)}
-                        checked={selectedAnswers[index] === option}
+                        onChange={() => handleAnswerSelect(indexQ,option)}
+                        checked={selectedAnswers[indexQ] === option}
                         disabled={showResults && option}//to disable selection after submession
                       />
                       {option}

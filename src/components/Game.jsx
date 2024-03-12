@@ -1,5 +1,8 @@
 import quizzesJson from '/data/quiz.json';
 import React,{ useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setQuizzes, addQuiz, deleteQuiz, updateQuiz } from '../reducers/quizReducer';
+import {setSelectedQuiz,clearSelectedQuiz} from '../reducers/selectedQuizReducer';
 import QuizList from './QuizList';
 import CreateQuiz from './CreateQuiz';
 import EditQuiz from './EditQuiz'
@@ -10,30 +13,38 @@ import fetchData from '../services/QuizzesService';
 function Game() {
 
   const [action, setAction] = useState(null);
-  const [quizzes, setQuizzes] = useState([]);
-  const [selectedQuiz, setSelectedQuiz] = useState(null);
-  // const [highestScore, setHighestScore] = useState(0);
+  // const [quizzes, setQuizzes] = useState([]);
+  const quizzes = useSelector(state => state.quizzes);
+  // const [selectedQuiz, setSelectedQuiz] = useState(null);
+  const selectedQuiz = useSelector(state => state.selectedQuiz);
+  const dispatch = useDispatch();
 
   // const path = '/data/quiz.json'
 
   useEffect(() => {
-    setQuizzes(quizzesJson);
-  }, []); 
+    dispatch(setQuizzes(quizzesJson));
+    dispatch(clearSelectedQuiz());
+  }, [dispatch]); 
 
   const handleDeleteQuiz = (e,quizid) => {
     e.preventDefault()
     console.log(quizid);
     // should add code to update json file after deletion
-    const newQuizlist = quizzes.filter(quiz => quiz.id !== quizid)
-    setQuizzes(newQuizlist);
+    // const newQuizlist = quizzes.filter(quiz => quiz.id !== quizid)
+    // setQuizzes(newQuizlist);
+    dispatch(deleteQuiz(quizid));
   };
 
   const handlePlayQuiz = (e,quizid) => {
     e.preventDefault()
     console.log(quizid);
-    const newQuizlist = quizzes.filter(quiz => quiz.id === quizid)
-    console.log(newQuizlist[0]);
-    setSelectedQuiz(newQuizlist[0]);
+    // const newQuizlist = quizzes.find(quiz => quiz.id === quizid)
+    const selectedQuizData = {
+      quizzes: quizzes,
+      quizId: quizid
+    };
+    // console.log(setSelectedQuiz(selectedQuizData));
+    dispatch(setSelectedQuiz(selectedQuizData));
     setAction('play');
   };
 
@@ -47,32 +58,37 @@ function Game() {
       }
       return quiz;
     });
-    setQuizzes(updatedQuizzes);
-    setSelectedQuiz(updatedQuizzes.find(quiz => quiz.id === quizId));
+
+    dispatch(setQuizzes(updatedQuizzes));
+
+    const selectedQuizData = {
+      quizzes: updatedQuizzes,
+      quizId: quizId
+    };
+    dispatch(setSelectedQuiz(selectedQuizData));
   };
 
   const handleEditQuiz = (e,quizid) => {
     e.preventDefault()
     console.log(quizid);
     // should add code to update json file after edit it
-    const newQuizlist = quizzes.filter(quiz => quiz.id === quizid)
-    setSelectedQuiz(newQuizlist[0]);
+    // const newQuizlist = quizzes.find(quiz => quiz.id === quizid)
+    const selectedQuizData = {
+      quizzes: quizzes,
+      quizId: quizid
+    };
+    dispatch(setSelectedQuiz(selectedQuizData));
     setAction('edit');
   };
 
   const handleReturnToList = () => {
     setAction(null);
-    setSelectedQuiz(null);
+    dispatch(clearSelectedQuiz());
   };
 
-  const handelDeletedQuestion = (quizid, questionid) => {
-    const updatedQuizzes = quizzes.map(quiz => {
-      if (quiz.id === quizid) {
-        quiz.questions = quiz.questions.filter(question => question.id !== questionid);
-      }
-      return quiz; // return it to make sure we update quizzez state
-    });
-    setQuizzes(updatedQuizzes);
+  const handelDeletedQuestion = (updatedQuiz) => {
+    // const updatedQuizzes = quizzes.map(quiz => (quiz.id === updatedQuiz.id ? updatedQuiz : quiz));
+    dispatch(updateQuiz(updatedQuiz));
     
   };
 
@@ -86,25 +102,38 @@ function Game() {
       }
       return quiz;
     });
-    setQuizzes(updatedQuizzes);
+    dispatch(setQuizzes(updatedQuizzes));
   };
 
   const onUpdateQuiz = (updatedQuiz) => {
     // Update the quiz after eding question
-    const updatedQuizzes = quizzes.map(quiz => (quiz.id === updatedQuiz.id ? updatedQuiz : quiz));
-    setQuizzes(updatedQuizzes);
+    console.log(updatedQuiz)
+    // const updatedQuizzes = quizzes.map(quiz => (quiz.id === updatedQuiz.id ? updatedQuiz : quiz));
+    dispatch(updateQuiz(updatedQuiz));
   };
 
 
   const handleCreateQuiz = (newQuiz) => {
     console.log(newQuiz)
-    setQuizzes([...quizzes, newQuiz]);
+    dispatch(addQuiz(newQuiz));
     
-    const newQuizlist = [...quizzes, newQuiz].filter(quiz => quiz.id === newQuiz.id)
-    console.log(newQuizlist);
-    setSelectedQuiz(newQuizlist[0]);
+    // const newQuizlist = [...quizzes, newQuiz].find(quiz => quiz.id === newQuiz.id)
+    // console.log(newQuizlist);
+
+    const selectedQuizData = {
+      quizzes: [...quizzes, newQuiz],
+      quizId: newQuiz.id
+    };
+    dispatch(setSelectedQuiz(selectedQuizData));
     
     setAction('edit');
+  };
+
+  const handleSaveQuiz = (e,quizId) => {
+    e.preventDefault();
+    const quizToSave = quizzes.find((quiz) => quiz.id === quizId);
+    localStorage.setItem(quizId, JSON.stringify(quizToSave));
+    alert(`${quizToSave.name} saved to local storage!`);
   };
 
   return (
@@ -134,6 +163,7 @@ function Game() {
               onDeleteQuiz={handleDeleteQuiz}
               onPlayQuiz={handlePlayQuiz}
               onEditQuiz={handleEditQuiz}
+              onSaveQuiz={handleSaveQuiz}
             />
             <CreateQuiz
             onCreateQuiz={handleCreateQuiz}
